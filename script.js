@@ -29,16 +29,14 @@ function setupReveal() {
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                // Muncul saat masuk layar
-                entry.target.classList.add('active');
+                entry.target.classList.add('active'); // Muncul saat masuk layar
             } else {
-                // Hilang saat keluar layar (baik ke atas maupun ke bawah)
-                entry.target.classList.remove('active');
+                entry.target.classList.remove('active'); // Hilang saat keluar layar
             }
         });
     }, { 
-        threshold: 0.15, // Muncul saat 15% elemen terlihat
-        rootMargin: '0px 0px -50px 0px' // Sedikit offset agar lebih natural
+        threshold: 0.15,
+        rootMargin: '0px 0px -50px 0px'
     });
     els.forEach(el => observer.observe(el));
 }
@@ -66,7 +64,7 @@ if (btnOpen) {
             sessionStorage.setItem('undangan_opened', 'true');
             window.scrollTo(0, 0);
             
-            // Trigger reveal untuk elemen yang langsung terlihat di atas
+            // Trigger reveal untuk elemen yang langsung terlihat
             setTimeout(() => {
                 document.querySelectorAll('.reveal').forEach(el => {
                     if (el.getBoundingClientRect().top < window.innerHeight) {
@@ -75,6 +73,7 @@ if (btnOpen) {
                 });
             }, 500);
 
+            // Mainkan musik
             const music = document.getElementById('bgMusic');
             if (music) {
                 music.play().catch(() => {});
@@ -218,12 +217,15 @@ function renderWish(wish, prepend = false) {
     else list.appendChild(card);
 }
 
+// Fungsi Ambil Data dari Supabase
 async function loadWishes() {
     try {
         const res = await fetch(`${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}?select=*&order=created_at.desc&limit=100`, { headers: supabaseHeaders });
         const wishes = await res.json();
         const list = document.getElementById('wishesList');
         if (!list) return;
+        
+        // Kosongkan list terlebih dahulu sebelum memasukkan data baru
         list.innerHTML = '';
         
         if (wishes.length === 0) {
@@ -239,10 +241,11 @@ async function loadWishes() {
             });
         });
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Gagal memuat ucapan:', error);
     }
 }
 
+// Form Submit
 const form = document.getElementById('rsvpForm');
 if (form) {
     form.addEventListener('submit', async function (e) {
@@ -254,9 +257,11 @@ if (form) {
         const now = new Date();
         const timeString = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' at ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
+        // Tampilkan seketika di layar
         renderWish({ name, status: attendance, text: message, time: timeString }, true);
         this.reset();
 
+        // Kirim ke database Supabase
         try {
             await fetch(`${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}`, {
                 method: 'POST',
@@ -301,9 +306,10 @@ if (menu && backToTop) {
     backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
 }
 
-// Muat ucapan pertama kali
-if (body.classList.contains('unlocked')) {
+/* =====================================================
+   10. INISIALISASI SAAT HALAMAN DIMUAT
+   ===================================================== */
+document.addEventListener('DOMContentLoaded', () => {
+    // Muat ucapan dari Supabase seketika, tanpa peduli status buka/tutup
     loadWishes();
-} else if (btnOpen) {
-    btnOpen.addEventListener('click', () => setTimeout(loadWishes, 1000), { once: true });
-}
+});
