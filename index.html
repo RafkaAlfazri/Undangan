@@ -13,20 +13,17 @@
 </head>
 <body class="locked">
 
-    <!-- AUDIO -->
     <audio id="bgMusic" loop preload="auto" src="lagu.mp3"></audio>
 
-    <!-- Tombol Musik -->
     <button class="music-btn" id="musicBtn" aria-label="Toggle musik">
         <svg class="icon-pause" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         <svg class="icon-play" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     </button>
 
-    <!-- Background layers -->
     <div class="bg-animated"></div>
     <div class="petals-layer" id="petalsLayer"></div>
 
-    <!-- ================= COVER FULL SCREEN ================= -->
+    <!-- COVER -->
     <div class="cover" id="cover">
         <div class="cover-photo" style="background-image: url('images/cover.jpg');"></div>
         <div class="cover-tint"></div>
@@ -61,10 +58,9 @@
         </div>
     </div>
 
-    <!-- ================= MAIN CONTENT ================= -->
+    <!-- MAIN CONTENT -->
     <div class="main-content" id="mainContent">
 
-        <!-- Floating Menu -->
         <nav class="floating-menu" id="floatingMenu">
             <a href="#opening" class="menu-item active">
                 <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg> Home
@@ -95,7 +91,7 @@
             <div class="opening-bg" style="background-image: url('images/cover.jpg');"></div>
             <div class="opening-overlay"></div>
             
-            <div class="opening-content">
+            <div class="opening-content reveal">
                 <p class="opening-eyebrow">We Are Getting Married</p>
                 <h1 class="opening-names">
                     <span>Masita</span>
@@ -109,16 +105,7 @@
                 </div>
                 <p class="opening-sub">Depok, Jawa Barat</p>
             </div>
-
-            <div class="scroll-indicator"><div class="scroll-mouse"></div></div>
         </section>
-
-        <!-- PEMBATAS 1 -->
-        <div class="section-divider">
-            <span class="divider-line"></span>
-            <svg class="divider-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <span class="divider-line"></span>
-        </div>
 
         <!-- QUOTES -->
         <section id="quotes">
@@ -131,13 +118,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- PEMBATAS 2 -->
-        <div class="section-divider">
-            <span class="divider-line"></span>
-            <svg class="divider-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
-            <span class="divider-line"></span>
-        </div>
 
         <!-- COUPLE -->
         <section id="couple">
@@ -175,36 +155,22 @@
             </div>
         </section>
 
-        <!-- PEMBATAS 3 -->
-        <div class="section-divider">
-            <span class="divider-line"></span>
-            <svg class="divider-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
-            <span class="divider-line"></span>
-        </div>
-
         <!-- GALLERY -->
         <section id="gallery">
             <div class="container">
                 <h2 class="section-title reveal">Galeri Foto</h2>
                 <p class="section-subtitle reveal delay-1">Momen Bahagia Kami</p>
                 
-                <div class="gallery-grid reveal zoom delay-2">
-                    <div class="gallery-item" data-caption="Momen 1"><img src="images/galeri-1.jpg" alt="Galeri 1"></div>
-                    <div class="gallery-item" data-caption="Momen 2"><img src="images/galeri-2.jpg" alt="Galeri 2"></div>
-                    <div class="gallery-item" data-caption="Momen 3"><img src="images/galeri-3.jpg" alt="Galeri 3"></div>
-                    <div class="gallery-item" data-caption="Momen 4"><img src="images/galeri-4.jpg" alt="Galeri 4"></div>
-                    <div class="gallery-item" data-caption="Momen 5"><img src="images/galeri-5.jpg" alt="Galeri 5"></div>
-                    <div class="gallery-item" data-caption="Momen 6"><img src="images/galeri-6.jpg" alt="Galeri 6"></div>
+                <div class="gallery-grid">
+                    <div class="gallery-item reveal zoom delay-1" data-caption="Momen 1"><img src="images/galeri-1.jpg" alt="Galeri 1"></div>
+                    <div class="gallery-item reveal zoom delay-2" data-caption="Momen 2"><img src="images/galeri-2.jpg" alt="Galeri 2"></div>
+                    <div class="gallery-item reveal zoom delay-3" data-caption="Momen 3"><img src="images/galeri-3.jpg" alt="Galeri 3"></div>
+                    <div class="gallery-item reveal zoom delay-1" data-caption="Momen 4"><img src="images/galeri-4.jpg" alt="Galeri 4"></div>
+                    <div class="gallery-item reveal zoom delay-2" data-caption="Momen 5"><img src="images/galeri-5.jpg" alt="Galeri 5"></div>
+                    <div class="gallery-item reveal zoom delay-3" data-caption="Momen 6"><img src="images/galeri-6.jpg" alt="Galeri 6"></div>
                 </div>
             </div>
         </section>
-
-        <!-- PEMBATAS 4 -->
-        <div class="section-divider">
-            <span class="divider-line"></span>
-            <svg class="divider-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <span class="divider-line"></span>
-        </div>
 
         <!-- ACARA -->
         <section id="acara">
@@ -243,13 +209,6 @@
             </div>
         </section>
 
-        <!-- PEMBATAS 5 -->
-        <div class="section-divider">
-            <span class="divider-line"></span>
-            <svg class="divider-icon" viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
-            <span class="divider-line"></span>
-        </div>
-
         <!-- GIFT -->
         <section id="gift">
             <div class="container">
@@ -274,13 +233,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- PEMBATAS 6 -->
-        <div class="section-divider">
-            <span class="divider-line"></span>
-            <svg class="divider-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-            <span class="divider-line"></span>
-        </div>
 
         <!-- RSVP -->
         <section id="rsvp">
@@ -323,7 +275,7 @@
         </section>
 
         <!-- FOOTER -->
-        <footer class="footer">
+        <footer class="footer reveal">
             <p class="footer-tag">Thank You</p>
             <p class="footer-names">Masita & Haddi Fawwaz</p>
             <p class="footer-credit">Made with <span class="footer-heart">❤</span> 2027</p>

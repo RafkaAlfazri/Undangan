@@ -310,7 +310,7 @@ body.unlocked .cover {
 .btn-open svg { width: 18px; height: 18px; fill: #fff; flex-shrink: 0; }
 
 /* =====================================================
-   MUSIC BUTTON (FIX)
+   MUSIC BUTTON
    ===================================================== */
 .music-btn {
     position: fixed; 
@@ -335,14 +335,12 @@ body.unlocked .cover {
     pointer-events: none;
 }
 
-/* Munculkan tombol setelah undangan dibuka */
 body.unlocked .music-btn { 
     opacity: 1; 
     transform: scale(1); 
     pointer-events: auto; 
 }
 
-/* Mengatur posisi ikon play & pause */
 .music-btn svg { 
     width: 22px; 
     height: 22px; 
@@ -351,15 +349,11 @@ body.unlocked .music-btn {
     transition: opacity 0.3s ease;
 }
 
-/* Default: Tampilkan Pause (karena musik otomatis nyala) */
 .music-btn .icon-play { opacity: 0; }
 .music-btn .icon-pause { opacity: 1; }
-
-/* Jika dijeda (paused): Tampilkan Play */
 .music-btn.paused .icon-play { opacity: 1; }
 .music-btn.paused .icon-pause { opacity: 0; }
 
-/* Animasi berputar saat musik menyala */
 .music-btn.playing {
     animation: spinMusic 3s linear infinite;
 }
@@ -370,62 +364,53 @@ body.unlocked .music-btn {
     100% { transform: scale(1) rotate(360deg); }
 }
 
-
 /* =====================================================
-   SECTION DIVIDER (PEMBATAS)
-   ===================================================== */
-.section-divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    padding: 0 20px;
-    margin: -20px 0;
-    position: relative;
-    z-index: 5;
-}
-
-.divider-line {
-    height: 1px;
-    width: 60px;
-    background: linear-gradient(90deg, transparent, var(--rose), transparent);
-    opacity: 0.5;
-}
-
-.divider-icon {
-    width: 18px;
-    height: 18px;
-    fill: var(--rose);
-    opacity: 0.7;
-    animation: pulseScale 3s ease-in-out infinite;
-}
-
-@keyframes pulseScale {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
-}
-
-/* =====================================================
-   LAYOUT & SECTIONS
+   LAYOUT & SCROLL ANIMATIONS (REVEAL)
    ===================================================== */
 .container { max-width: 700px; margin: 0 auto; padding: 0 20px; position: relative; }
 section { padding: 70px 0; position: relative; }
 
-.reveal { opacity: 0; transform: translateY(40px); transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
-.reveal.active { opacity: 1; transform: translateY(0); }
-.reveal.from-left { transform: translateX(-40px); }
-.reveal.from-left.active { transform: translateX(0); }
-.reveal.from-right { transform: translateX(40px); }
-.reveal.from-right.active { transform: translateX(0); }
-.reveal.zoom { transform: scale(0.9); }
-.reveal.zoom.active { transform: scale(1); }
+/* Animasi Dasar */
+.reveal {
+    opacity: 0;
+    transform: translateY(80px); /* Muncul dari bawah lebih jauh */
+    transition: opacity 1s ease, transform 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+    will-change: opacity, transform;
+}
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
 
-.delay-1 { transition-delay: 0.1s; }
-.delay-2 { transition-delay: 0.2s; }
-.delay-3 { transition-delay: 0.3s; }
+/* Animasi Geser Kiri & Kanan */
+.reveal.from-left {
+    transform: translateX(-80px);
+}
+.reveal.from-left.active {
+    transform: translateX(0);
+}
+.reveal.from-right {
+    transform: translateX(80px);
+}
+.reveal.from-right.active {
+    transform: translateX(0);
+}
+
+/* Animasi Zoom (Membesar) */
+.reveal.zoom {
+    transform: scale(0.8);
+}
+.reveal.zoom.active {
+    transform: scale(1);
+}
+
+/* Jeda Animasi (Delay) */
+.delay-1 { transition-delay: 0.15s; }
+.delay-2 { transition-delay: 0.3s; }
+.delay-3 { transition-delay: 0.45s; }
 
 /* =====================================================
-   OPENING HERO
+   OPENING HERO (PARALLAX)
    ===================================================== */
 .opening {
     min-height: 100vh; min-height: 100dvh;
@@ -433,9 +418,17 @@ section { padding: 70px 0; position: relative; }
     text-align: center; padding: 40px 20px; position: relative; overflow: hidden;
 }
 
-.opening-bg { position: absolute; inset: 0; background-size: cover; background-position: center; animation: slowZoom 20s ease-in-out infinite alternate; }
+/* Efek Parallax pada Gambar Background */
+.opening-bg { 
+    position: absolute; 
+    inset: 0; 
+    background-size: cover; 
+    background-position: center; 
+    background-attachment: fixed; /* Kunci utama efek parallax */
+    transform: scale(1.1); /* Sedikit di-zoom agar tidak ada celah saat scroll */
+}
 .opening-overlay { position: absolute; inset: 0; background: rgba(253, 246, 243, 0.6); backdrop-filter: blur(2px); }
-.opening-content { position: relative; z-index: 2; }
+.opening-content { position: relative; z-index: 2; background: rgba(253, 246, 243, 0.4); padding: 40px; border-radius: 30px; backdrop-filter: blur(5px); }
 
 .opening-eyebrow {
     font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase;
@@ -455,11 +448,6 @@ section { padding: 70px 0; position: relative; }
 .opening-date-badge .line { width: 40px; height: 1px; background: var(--rose); }
 .opening-date-badge .text { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; letter-spacing: 4px; color: var(--text-dark); font-weight: 600; }
 .opening-sub { font-size: 0.8rem; letter-spacing: 3px; color: var(--text-medium); text-transform: uppercase; font-weight: 600; }
-
-.scroll-indicator { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 2; }
-.scroll-mouse { width: 22px; height: 36px; border: 2px solid var(--rose); border-radius: 12px; position: relative; }
-.scroll-mouse::before { content: ''; position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 4px; height: 8px; background: var(--rose); border-radius: 2px; animation: scrollDot 2s infinite; }
-@keyframes scrollDot { 0% { opacity: 1; top: 6px; } 100% { opacity: 0; top: 18px; } }
 
 /* =====================================================
    GLASS CARD & TITLES
