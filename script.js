@@ -22,19 +22,23 @@ const supabaseHeaders = {
 };
 
 /* =====================================================
-   1. ANIMASI REVEAL SAAT SCROLL (INTERAKTIF)
+   1. ANIMASI REVEAL INTERAKTIF DUA ARAH (SCROLL)
    ===================================================== */
 function setupReveal() {
     const els = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
+                // Muncul saat masuk layar
                 entry.target.classList.add('active');
+            } else {
+                // Hilang saat keluar layar (baik ke atas maupun ke bawah)
+                entry.target.classList.remove('active');
             }
         });
     }, { 
         threshold: 0.15, // Muncul saat 15% elemen terlihat
-        rootMargin: '0px 0px -50px 0px' 
+        rootMargin: '0px 0px -50px 0px' // Sedikit offset agar lebih natural
     });
     els.forEach(el => observer.observe(el));
 }
@@ -97,7 +101,7 @@ function createPetal() {
 
 const petalsLayer = document.getElementById('petalsLayer');
 if (petalsLayer) {
-    const count = window.innerWidth < 640 ? 15 : 25; // Tambah jumlah kelopak
+    const count = window.innerWidth < 640 ? 15 : 25;
     for (let i = 0; i < count; i++) {
         petalsLayer.appendChild(createPetal());
     }
