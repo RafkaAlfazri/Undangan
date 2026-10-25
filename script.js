@@ -22,13 +22,31 @@ const supabaseHeaders = {
 };
 
 /* =====================================================
-   1. COVER & BUKA UNDANGAN
+   1. ANIMASI REVEAL SAAT SCROLL (INTERAKTIF)
+   ===================================================== */
+function setupReveal() {
+    const els = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, { 
+        threshold: 0.15, // Muncul saat 15% elemen terlihat
+        rootMargin: '0px 0px -50px 0px' 
+    });
+    els.forEach(el => observer.observe(el));
+}
+setupReveal();
+
+/* =====================================================
+   2. COVER & BUKA UNDANGAN
    ===================================================== */
 const btnOpen = document.getElementById('btnOpen');
 const body = document.body;
 
 if (btnOpen) {
-    // Cek apakah user sudah pernah membuka di sesi ini
     const hasOpened = sessionStorage.getItem('undangan_opened');
     if (hasOpened === 'true') {
         body.classList.remove('locked');
@@ -36,7 +54,6 @@ if (btnOpen) {
         window.scrollTo(0, 0);
     }
 
-    // Event klik tombol buka
     btnOpen.addEventListener('click', () => {
         btnOpen.style.transform = 'scale(0.95)';
         setTimeout(() => {
@@ -44,8 +61,16 @@ if (btnOpen) {
             body.classList.add('unlocked');
             sessionStorage.setItem('undangan_opened', 'true');
             window.scrollTo(0, 0);
+            
+            // Trigger reveal untuk elemen yang langsung terlihat di atas
+            setTimeout(() => {
+                document.querySelectorAll('.reveal').forEach(el => {
+                    if (el.getBoundingClientRect().top < window.innerHeight) {
+                        el.classList.add('active');
+                    }
+                });
+            }, 500);
 
-            // Mainkan musik
             const music = document.getElementById('bgMusic');
             if (music) {
                 music.play().catch(() => {});
@@ -55,7 +80,31 @@ if (btnOpen) {
 }
 
 /* =====================================================
-   2. HITUNG MUNDUR (COUNTDOWN)
+   3. ANIMASI KELOPAK BUNGA JATUH
+   ===================================================== */
+function createPetal() {
+    const petal = document.createElement('div');
+    petal.className = 'petal' + (Math.random() > 0.7 ? ' sage' : '');
+    const size = 8 + Math.random() * 10;
+    petal.style.width = size + 'px';
+    petal.style.height = size + 'px';
+    petal.style.left = Math.random() * 100 + '%';
+    petal.style.setProperty('--duration', (8 + Math.random() * 8) + 's');
+    petal.style.setProperty('--delay', (Math.random() * 8) + 's');
+    petal.style.setProperty('--drift', (Math.random() * 150 - 75) + 'px');
+    return petal;
+}
+
+const petalsLayer = document.getElementById('petalsLayer');
+if (petalsLayer) {
+    const count = window.innerWidth < 640 ? 15 : 25; // Tambah jumlah kelopak
+    for (let i = 0; i < count; i++) {
+        petalsLayer.appendChild(createPetal());
+    }
+}
+
+/* =====================================================
+   4. HITUNG MUNDUR (COUNTDOWN)
    ===================================================== */
 function updateCountdown() {
     const targetDate = new Date(CONFIG.weddingDate).getTime();
@@ -84,37 +133,11 @@ function updateCountdown() {
     ccMinutes.textContent = String(m).padStart(2, '0');
     ccSeconds.textContent = String(s).padStart(2, '0');
 }
-
-// Jalankan countdown seketika dan ulangi tiap detik
 updateCountdown();
 setInterval(updateCountdown, 1000);
 
 /* =====================================================
-   3. ANIMASI KELOPAK BUNGA (PETALS)
-   ===================================================== */
-function createPetal() {
-    const petal = document.createElement('div');
-    petal.className = 'petal' + (Math.random() > 0.7 ? ' sage' : '');
-    const size = 8 + Math.random() * 10;
-    petal.style.width = size + 'px';
-    petal.style.height = size + 'px';
-    petal.style.left = Math.random() * 100 + '%';
-    petal.style.setProperty('--duration', (8 + Math.random() * 8) + 's');
-    petal.style.setProperty('--delay', (Math.random() * 8) + 's');
-    petal.style.setProperty('--drift', (Math.random() * 150 - 75) + 'px');
-    return petal;
-}
-
-const petalsLayer = document.getElementById('petalsLayer');
-if (petalsLayer) {
-    const count = window.innerWidth < 640 ? 12 : 20;
-    for (let i = 0; i < count; i++) {
-        petalsLayer.appendChild(createPetal());
-    }
-}
-
-/* =====================================================
-   4. NAMA TAMU DARI URL (?to=Nama)
+   5. NAMA TAMU DARI URL (?to=Nama)
    ===================================================== */
 const params = new URLSearchParams(window.location.search);
 const to = params.get('to');
@@ -124,7 +147,7 @@ if (to) {
 }
 
 /* =====================================================
-   5. PEMUTAR MUSIK
+   6. PEMUTAR MUSIK
    ===================================================== */
 const music = document.getElementById('bgMusic');
 const musicBtn = document.getElementById('musicBtn');
@@ -147,16 +170,6 @@ if (music && musicBtn) {
         }
     });
 }
-
-/* =====================================================
-   6. ANIMASI REVEAL SAAT SCROLL
-   ===================================================== */
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('active');
-    });
-}, { threshold: 0.12 });
-document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
 /* =====================================================
    7. FITUR SALIN REKENING BCA
@@ -237,11 +250,9 @@ if (form) {
         const now = new Date();
         const timeString = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' at ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 
-        // Render langsung di layar
         renderWish({ name, status: attendance, text: message, time: timeString }, true);
         this.reset();
 
-        // Kirim ke Supabase
         try {
             await fetch(`${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}`, {
                 method: 'POST',
@@ -254,7 +265,39 @@ if (form) {
     });
 }
 
-// Muat ucapan saat pertama kali dibuka atau setelah klik tombol
+/* =====================================================
+   9. MENU MENGAMBANG & BACK TO TOP
+   ===================================================== */
+const menu = document.getElementById('floatingMenu');
+const backToTop = document.getElementById('backToTop');
+const sections = document.querySelectorAll('section[id]');
+const menuItems = document.querySelectorAll('.menu-item');
+
+if (menu && backToTop) {
+    window.addEventListener('scroll', () => {
+        if (body.classList.contains('locked')) return;
+        const y = window.scrollY;
+
+        if (y > window.innerHeight * 0.5) menu.classList.add('visible');
+        else menu.classList.remove('visible');
+
+        if (y > window.innerHeight) backToTop.classList.add('visible');
+        else backToTop.classList.remove('visible');
+
+        let current = '';
+        sections.forEach(s => {
+            if (y >= s.offsetTop - 150) current = s.getAttribute('id');
+        });
+        menuItems.forEach(it => {
+            it.classList.remove('active');
+            if (it.getAttribute('href').substring(1) === current) it.classList.add('active');
+        });
+    }, { passive: true });
+
+    backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+}
+
+// Muat ucapan pertama kali
 if (body.classList.contains('unlocked')) {
     loadWishes();
 } else if (btnOpen) {
