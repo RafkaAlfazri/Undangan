@@ -344,12 +344,11 @@ const sections = document.querySelectorAll('section[id]');
 const menuItems = document.querySelectorAll('.menu-item');
 
 if (menu && backToTop) {
+    document.body.append(menu, backToTop);
+
     window.addEventListener('scroll', () => {
         if (body.classList.contains('locked')) return;
         const y = window.scrollY;
-
-        if (y > window.innerHeight * 0.5) menu.classList.add('visible');
-        else menu.classList.remove('visible');
 
         if (y > window.innerHeight) backToTop.classList.add('visible');
         else backToTop.classList.remove('visible');

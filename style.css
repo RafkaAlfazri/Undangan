@@ -917,23 +917,58 @@ section { padding: 70px 0; position: relative; }
 @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
 .floating-menu {
-    position: fixed; bottom: 15px; left: 50%; transform: translateX(-50%) translateY(100px);
-    display: flex; gap: 5px; padding: 8px 12px; background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px); border-radius: 50px; box-shadow: 0 8px 30px rgba(0,0,0,0.1);
-    z-index: 1000; opacity: 0; transition: all 0.5s cubic-bezier(0.22, 1, 0.36, 1);
-    max-width: calc(100% - 30px); overflow-x: auto;
+    position: fixed;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translate(-50%, 140%);
+    display: flex;
+    flex-direction: row;
+    gap: 3px;
+    padding: 7px 9px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 134, 139, 0.14);
+    border-radius: 24px;
+    box-shadow: 0 8px 30px rgba(58, 46, 42, 0.14);
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s;
+    width: max-content;
+    max-width: calc(100vw - 24px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
 }
-.floating-menu.visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+.floating-menu::-webkit-scrollbar { display: none; }
+body.unlocked .floating-menu,
+.floating-menu.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+}
 .menu-item {
-    display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 7px 11px;
-    border-radius: 30px; text-decoration: none; color: var(--text-muted); font-size: 0.58rem;
-    text-transform: uppercase; transition: all 0.3s ease; white-space: nowrap; font-weight: 700;
+    display: flex;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 7px 10px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-size: 0.55rem;
+    text-transform: uppercase;
+    transition: color 0.25s ease, background 0.25s ease, transform 0.25s ease;
+    white-space: nowrap;
+    font-weight: 700;
 }
-.menu-item svg { width: 17px; height: 17px; fill: currentColor; }
+.menu-item svg { width: 17px; height: 17px; fill: currentColor; flex: 0 0 auto; }
 .menu-item:hover, .menu-item.active { color: var(--rose-dark); background: rgba(212, 134, 139, 0.1); }
+.menu-item:hover { transform: translateY(-2px); }
 
 .back-to-top {
-    position: fixed; bottom: 85px; right: 20px; width: 40px; height: 40px; border-radius: 50%;
+    position: fixed; bottom: 92px; right: 20px; width: 40px; height: 40px; border-radius: 50%;
     background: #fff; color: var(--rose-dark); display: flex; align-items: center; justify-content: center;
     cursor: pointer; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 999; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
@@ -953,6 +988,26 @@ section { padding: 70px 0; position: relative; }
     .person-avatar { width: 150px; height: 150px; }
     .cover-content { max-width: 450px; }
     .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+}
+
+@media (max-width: 639px) {
+    .floating-menu {
+        bottom: max(8px, env(safe-area-inset-bottom));
+        gap: 1px;
+        padding: 5px 6px;
+        border-radius: 24px;
+    }
+
+    .menu-item {
+        min-width: 48px;
+        padding: 6px 7px;
+        font-size: 0.48rem;
+    }
+
+    .menu-item svg { width: 17px; height: 17px; }
+    .menu-item:hover { transform: translateY(-1px); }
+
+    .back-to-top { right: 12px; bottom: 78px; }
 }
 
 @media (max-height: 700px) {
