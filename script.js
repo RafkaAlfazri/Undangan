@@ -224,7 +224,7 @@ function renderWish(wish, prepend = false) {
 
     const status = document.createElement('span');
     status.className = `wish-badge ${wish.status.toLowerCase().replace(/\s+/g, '-')}`;
-    status.textContent = wish.status;
+    status.textContent = wish.status === 'Masih Ragu' ? 'Konfirmasi menyusul' : wish.status;
 
     const text = document.createElement('p');
     text.className = 'wish-text';
