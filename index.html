@@ -244,7 +244,7 @@
                     <form id="rsvpForm">
                         <div class="form-group">
                             <label class="form-label" for="name">Nama</label>
-                            <input type="text" id="name" class="form-input" placeholder="Nama Anda" required autocomplete="name">
+                            <input type="text" id="name" class="form-input" placeholder="Nama Anda" required minlength="2" maxlength="100" autocomplete="name">
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="attendance">Konfirmasi Kehadiran</label>
@@ -257,18 +257,19 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="message">Ucapan & Doa</label>
-                            <textarea id="message" class="form-textarea" placeholder="Tulis ucapan terbaik Anda..." required></textarea>
+                            <textarea id="message" class="form-textarea" placeholder="Tulis ucapan terbaik Anda..." required minlength="3" maxlength="1000"></textarea>
                         </div>
                         <button type="submit" class="btn-primary btn-full">
                             <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
                             Kirim Ucapan
                         </button>
+                        <p class="rsvp-feedback" id="rsvpFeedback" aria-live="polite"></p>
                     </form>
                 </div>
 
                 <div class="wishes-list reveal delay-3" id="wishesList">
                     <p class="wishes-empty" id="wishesEmpty">
-                        Belum ada ucapan. Jadilah yang pertama! 💌
+                        Memuat ucapan...
                     </p>
                 </div>
             </div>

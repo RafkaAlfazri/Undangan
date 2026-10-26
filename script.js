@@ -1,7 +1,7 @@
 /* =====================================================
    KONFIGURASI SUPABASE & UNDANGAN
    ===================================================== */
-const SUPABASE_URL = 'https://nbxcubodnzqevitbdjtx.supabase.co';
+const SUPABASE_URL = 'https://nbxcubodnzqeivtbdjtx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_hwTKNzavCmvkPLGG6XLE0w_KUOnj-MD';
 
 const CONFIG = {
@@ -204,32 +204,62 @@ function renderWish(wish, prepend = false) {
 
     const card = document.createElement('div');
     card.className = 'wish-card';
-    card.innerHTML = `
-        <div class="wish-header">
-            <span class="wish-name">${wish.name}</span>
-            <span class="wish-badge ${wish.status === 'Hadir' ? 'hadir' : 'tidak-hadir'}">${wish.status}</span>
-        </div>
-        <p class="wish-text">${wish.text}</p>
-        <p class="wish-time">${wish.time}</p>
-    `;
+    const header = document.createElement('div');
+    header.className = 'wish-header';
+
+    const name = document.createElement('span');
+    name.className = 'wish-name';
+    name.textContent = wish.name;
+
+    const status = document.createElement('span');
+    status.className = `wish-badge ${wish.status.toLowerCase().replace(/\s+/g, '-')}`;
+    status.textContent = wish.status;
+
+    const text = document.createElement('p');
+    text.className = 'wish-text';
+    text.textContent = wish.text;
+
+    const time = document.createElement('p');
+    time.className = 'wish-time';
+    time.textContent = wish.time;
+
+    header.append(name, status);
+    card.append(header, text, time);
 
     if (prepend) list.insertBefore(card, list.firstChild);
     else list.appendChild(card);
 }
 
-// Fungsi Ambil Data dari Supabase
+function showWishesMessage(message) {
+    const list = document.getElementById('wishesList');
+    if (!list) return;
+
+    const empty = document.createElement('p');
+    empty.className = 'wishes-empty';
+    empty.textContent = message;
+    list.replaceChildren(empty);
+}
+
 async function loadWishes() {
     try {
-        const res = await fetch(`${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}?select=*&order=created_at.desc&limit=100`, { headers: supabaseHeaders });
+        const res = await fetch(
+            `${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}?select=id,name,attendance,message,created_at&is_visible=eq.true&order=created_at.desc&limit=100`,
+            { headers: supabaseHeaders }
+        );
         const wishes = await res.json();
         const list = document.getElementById('wishesList');
         if (!list) return;
-        
-        // Kosongkan list terlebih dahulu sebelum memasukkan data baru
-        list.innerHTML = '';
-        
+
+        if (!res.ok) {
+            throw new Error(wishes.message || wishes.details || 'Permintaan ke Supabase ditolak.');
+        }
+        if (!Array.isArray(wishes)) {
+            throw new Error('Respons Supabase tidak sesuai format.');
+        }
+
+        list.replaceChildren();
         if (wishes.length === 0) {
-            list.innerHTML = '<p class="wishes-empty" id="wishesEmpty">Belum ada ucapan. Jadilah yang pertama! 💌</p>';
+            showWishesMessage('Belum ada ucapan. Jadilah yang pertama!');
             return;
         }
         wishes.forEach(w => {
@@ -242,6 +272,7 @@ async function loadWishes() {
         });
     } catch (error) {
         console.error('Gagal memuat ucapan:', error);
+        showWishesMessage('Ucapan gagal dimuat. Periksa koneksi atau konfigurasi Supabase.');
     }
 }
 
@@ -250,26 +281,45 @@ const form = document.getElementById('rsvpForm');
 if (form) {
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
-        const name = document.getElementById('name').value;
+        const name = document.getElementById('name').value.trim();
         const attendance = document.getElementById('attendance').value;
-        const message = document.getElementById('message').value;
+        const message = document.getElementById('message').value.trim();
+        const feedback = document.getElementById('rsvpFeedback');
+        const submitButton = form.querySelector('button[type="submit"]');
+        feedback.textContent = 'Mengirim ucapan...';
+        feedback.classList.remove('error', 'success');
+        submitButton.disabled = true;
 
-        const now = new Date();
-        const timeString = now.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) + ' at ' + now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-
-        // Tampilkan seketika di layar
-        renderWish({ name, status: attendance, text: message, time: timeString }, true);
-        this.reset();
-
-        // Kirim ke database Supabase
         try {
-            await fetch(`${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}`, {
+            const res = await fetch(`${CONFIG.supabase.url}/rest/v1/${CONFIG.supabase.table}`, {
                 method: 'POST',
                 headers: supabaseHeaders,
-                body: JSON.stringify({ name: name, attendance: attendance, message: message })
+                body: JSON.stringify({ name, attendance, message })
             });
-        } catch (err) {
-            console.log('Gagal kirim ke db', err);
+            const result = await res.json();
+            if (!res.ok) {
+                throw new Error(result.message || result.details || 'Permintaan ke Supabase ditolak.');
+            }
+
+            const savedWish = Array.isArray(result) ? result[0] : null;
+            const time = savedWish?.created_at
+                ? new Date(savedWish.created_at).toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' })
+                : new Date().toLocaleString('id-ID', { dateStyle: 'long', timeStyle: 'short' });
+            renderWish({
+                name: savedWish?.name || name,
+                status: savedWish?.attendance || attendance,
+                text: savedWish?.message || message,
+                time
+            }, true);
+            form.reset();
+            feedback.textContent = 'Ucapan berhasil dikirim. Terima kasih!';
+            feedback.classList.add('success');
+        } catch (error) {
+            console.error('Gagal mengirim ucapan:', error);
+            feedback.textContent = 'Ucapan gagal dikirim. Periksa konfigurasi Supabase dan coba lagi.';
+            feedback.classList.add('error');
+        } finally {
+            submitButton.disabled = false;
         }
     });
 }
