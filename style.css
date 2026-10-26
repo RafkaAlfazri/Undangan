@@ -814,6 +814,7 @@ section { padding: 70px 0; position: relative; }
 .event-divider { width: 60px; height: 1px; background: var(--rose); margin: 15px auto; opacity: 0.5; }
 .event-location { font-size: 0.9rem; color: var(--text-medium); line-height: 1.8; margin-bottom: 25px; }
 .event-location strong { color: var(--text-dark); font-weight: 700; display: inline-block; margin-bottom: 5px; }
+.maps-hint { margin: -12px 0 12px; color: var(--text-muted); font-size: 0.72rem; line-height: 1.6; }
 
 /* =====================================================
    BUTTONS & GIFT
