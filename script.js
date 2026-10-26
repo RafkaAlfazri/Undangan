@@ -47,6 +47,8 @@ setupReveal();
    ===================================================== */
 const btnOpen = document.getElementById('btnOpen');
 const body = document.body;
+const cover = document.getElementById('cover');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 if (btnOpen) {
     const hasOpened = sessionStorage.getItem('undangan_opened');
@@ -56,29 +58,37 @@ if (btnOpen) {
         window.scrollTo(0, 0);
     }
 
-    btnOpen.addEventListener('click', () => {
-        btnOpen.style.transform = 'scale(0.95)';
-        setTimeout(() => {
-            body.classList.remove('locked');
-            body.classList.add('unlocked');
-            sessionStorage.setItem('undangan_opened', 'true');
-            window.scrollTo(0, 0);
-            
-            // Trigger reveal untuk elemen yang langsung terlihat
-            setTimeout(() => {
-                document.querySelectorAll('.reveal').forEach(el => {
-                    if (el.getBoundingClientRect().top < window.innerHeight) {
-                        el.classList.add('active');
-                    }
-                });
-            }, 500);
+    const finishOpening = () => {
+        body.classList.remove('locked');
+        body.classList.add('unlocked');
+        sessionStorage.setItem('undangan_opened', 'true');
+        window.scrollTo(0, 0);
 
-            // Mainkan musik
-            const music = document.getElementById('bgMusic');
-            if (music) {
-                music.play().catch(() => {});
-            }
-        }, 200);
+        setTimeout(() => {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if (el.getBoundingClientRect().top < window.innerHeight) {
+                    el.classList.add('active');
+                }
+            });
+        }, 500);
+
+        const music = document.getElementById('bgMusic');
+        if (music) music.play().catch(() => {});
+    };
+
+    btnOpen.addEventListener('click', () => {
+        btnOpen.disabled = true;
+        if (prefersReducedMotion) {
+            finishOpening();
+            return;
+        }
+
+        cover.classList.add('is-folding');
+        setTimeout(() => {
+            cover.classList.add('is-flying');
+            body.classList.add('page-revealing');
+        }, 720);
+        setTimeout(finishOpening, 1900);
     });
 }
 
@@ -204,6 +214,7 @@ function renderWish(wish, prepend = false) {
 
     const card = document.createElement('div');
     card.className = 'wish-card';
+    if (prepend) card.classList.add('is-new');
     const header = document.createElement('div');
     header.className = 'wish-header';
 
@@ -363,3 +374,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Muat ucapan dari Supabase seketika, tanpa peduli status buka/tutup
     loadWishes();
 });
+
+const openingSection = document.querySelector('.opening');
+const openingBackground = document.querySelector('.opening-bg');
+if (openingSection && openingBackground && !prefersReducedMotion) {
+    let parallaxFrame = null;
+
+    const updateParallax = () => {
+        if (parallaxFrame !== null) return;
+        parallaxFrame = window.requestAnimationFrame(() => {
+            const distance = Math.max(-40, Math.min(40, -openingSection.getBoundingClientRect().top * 0.08));
+            openingBackground.style.setProperty('--parallax-y', `${distance}px`);
+            parallaxFrame = null;
+        });
+    };
+
+    window.addEventListener('scroll', updateParallax, { passive: true });
+    window.addEventListener('resize', updateParallax);
+    updateParallax();
+}
