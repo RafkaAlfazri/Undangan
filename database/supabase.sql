@@ -34,3 +34,10 @@ CREATE POLICY "Anyone can send wishes"
         AND char_length(trim(message)) BETWEEN 3 AND 1000
         AND is_visible IS TRUE
     );
+
+DROP POLICY IF EXISTS "RSVP deadline" ON public.wishes;
+CREATE POLICY "RSVP deadline"
+    ON public.wishes AS RESTRICTIVE
+    FOR INSERT
+    TO anon, authenticated
+    WITH CHECK (now() < TIMESTAMPTZ '2027-03-21 08:00:00+07:00');

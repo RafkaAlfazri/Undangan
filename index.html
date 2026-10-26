@@ -315,7 +315,7 @@
                 <h2 class="section-title reveal">Ucapan & Doa</h2>
                 <p class="section-subtitle reveal delay-1">Kirim Ucapan & Konfirmasi Kehadiran</p>
 
-                <div class="glass-card reveal delay-2">
+                <div class="glass-card reveal delay-2" id="rsvpFormCard">
                     <form id="rsvpForm">
                         <div class="form-group">
                             <label class="form-label" for="name">Nama</label>
@@ -341,6 +341,10 @@
                         <p class="rsvp-feedback" id="rsvpFeedback" aria-live="polite"></p>
                     </form>
                 </div>
+
+                <p class="rsvp-closed-message" id="rsvpClosedMessage" aria-live="polite" hidden>
+                    Konfirmasi kehadiran telah ditutup. Ucapan dan doa tetap dapat dibaca di bawah.
+                </p>
 
                 <div class="wishes-list reveal delay-3" id="wishesList">
                     <p class="wishes-empty" id="wishesEmpty">

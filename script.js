@@ -6,6 +6,7 @@ const SUPABASE_ANON_KEY = 'sb_publishable_hwTKNzavCmvkPLGG6XLE0w_KUOnj-MD';
 
 const CONFIG = {
     weddingDate: 'March 21, 2027 08:00:00 GMT+0700',
+    rsvpDeadline: '2027-03-21T08:00:00+07:00',
     musicVolume: 0.5,
     supabase: {
         url: SUPABASE_URL,
@@ -289,9 +290,35 @@ async function loadWishes() {
 
 // Form Submit
 const form = document.getElementById('rsvpForm');
+const rsvpFormCard = document.getElementById('rsvpFormCard');
+const rsvpClosedMessage = document.getElementById('rsvpClosedMessage');
+const rsvpDeadline = new Date(CONFIG.rsvpDeadline).getTime();
+
+function closeRsvpForm() {
+    if (rsvpFormCard) rsvpFormCard.hidden = true;
+    if (rsvpClosedMessage) rsvpClosedMessage.hidden = false;
+}
+
+function scheduleRsvpClosure() {
+    const remaining = rsvpDeadline - Date.now();
+    if (remaining <= 0) {
+        closeRsvpForm();
+        return;
+    }
+
+    setTimeout(scheduleRsvpClosure, Math.min(remaining, 12 * 60 * 60 * 1000));
+}
+
+scheduleRsvpClosure();
+
 if (form) {
     form.addEventListener('submit', async function (e) {
         e.preventDefault();
+        if (Date.now() >= rsvpDeadline) {
+            closeRsvpForm();
+            return;
+        }
+
         const name = document.getElementById('name').value.trim();
         const attendance = document.getElementById('attendance').value;
         const message = document.getElementById('message').value.trim();
