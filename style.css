@@ -49,16 +49,16 @@ body.locked {
 .main-content {
     opacity: 0;
     visibility: hidden;
-    transform: translate3d(0, 10vh, 0) scale(0.97);
+    transform: translate3d(0, 24px, 0);
     transform-origin: center top;
-    transition: opacity 0.9s ease, transform 1.05s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 1.05s;
+    transition: opacity 0.75s ease, transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1), visibility 0s linear 0.9s;
 }
 
 body.page-revealing .main-content,
 body.unlocked .main-content {
     opacity: 1;
     visibility: visible;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
     transition-delay: 0s;
 }
 
@@ -160,10 +160,10 @@ body.unlocked .cover {
 .floral-corner {
     position: absolute;
     z-index: 2;
-    width: clamp(100px, 19vw, 165px);
+    width: clamp(130px, 22vw, 185px);
     height: auto;
     overflow: visible;
-    opacity: 0.62;
+    opacity: 0.82;
     pointer-events: none;
     transform-origin: 10% 10%;
     animation: floralSway 10s ease-in-out infinite alternate;
@@ -201,23 +201,23 @@ body.unlocked .cover {
 
 .floral-stem {
     fill: none;
-    stroke: #7c8b73;
-    stroke-width: 1.45;
+    stroke: #627b61;
+    stroke-width: 1.8;
     stroke-linecap: round;
 }
 
 .floral-leaf {
-    fill: rgba(168, 184, 160, 0.12);
-    stroke: #7c8b73;
-    stroke-width: 1;
+    fill: rgba(168, 184, 160, 0.28);
+    stroke: #627b61;
+    stroke-width: 1.2;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
 .floral-blossom ellipse {
-    fill: rgba(253, 246, 243, 0.22);
-    stroke: #bd8583;
-    stroke-width: 1;
+    fill: rgba(253, 246, 243, 0.48);
+    stroke: #a96870;
+    stroke-width: 1.2;
 }
 
 .floral-center {
@@ -227,9 +227,9 @@ body.unlocked .cover {
 }
 
 .floral-bud circle {
-    fill: rgba(253, 246, 243, 0.35);
-    stroke: #bd8583;
-    stroke-width: 0.9;
+    fill: rgba(253, 246, 243, 0.55);
+    stroke: #a96870;
+    stroke-width: 1.1;
 }
 
 .floral-blossom {
@@ -328,6 +328,13 @@ body.unlocked .cover {
     opacity: 0;
     transform: scale(0.96);
     transition: opacity 0.35s ease, transform 0.6s ease;
+}
+
+.cover.is-folding .cover-photo,
+.cover.is-folding .floral-corner,
+.cover.is-folding .floral-blossom,
+.cover.is-folding .floral-bud {
+    animation-play-state: paused;
 }
 
 .cover.is-folding .paper-transition {
